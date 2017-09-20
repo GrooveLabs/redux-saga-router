@@ -38,6 +38,7 @@
   "dependencies": {
     "fsm-iterator": "^1.0.0",
     "history": "^4.3.0",
+    "prop-types": "^15.5.10",
     "ruta3": "^2.0.1"
   },
   "devDependencies": {
