@@ -31,6 +31,14 @@ export default function router(history, routes, options = {}) {
     };
   }
 
+  function deepEqual(x, y) {
+    const ok = Object.keys, tx = typeof x, ty = typeof y;
+    return x && y && tx === 'object' && tx === ty ? (
+      ok(x).length === ok(y).length &&
+      ok(x).every(key => deepEqual(x[key], y[key]))
+    ) : (x === y);
+  }
+
   return fsmIterator(INIT, {
     [INIT]: () => ({
       value: call(createHistoryChannel, history),
@@ -91,13 +99,28 @@ export default function router(history, routes, options = {}) {
       let match = routeMatcher.match(path);
       const effects = [];
 
+      let onlyQueryParamChange = false;
+
+      // Ensuring both match and lastMatch are not null before navigating keys in the 'else if'
+      if (lastMatch === null || match === null) {
+        onlyQueryParamChange = false;
+      } else if (match.index === lastMatch.index && deepEqual(lastMatch.params, match.params)) {
+        // If the indexs match, the root path has not changed
+        // and if the url params are the same then those have not changed either.
+        // The only other option that would trigger HANDLE_LOCATION
+        // is if only the query params were changed.
+        onlyQueryParamChange = true;
+      }
+
       while (match !== null) {
         lastMatch = match;
         effects.push(spawn(match.action, match.params));
         match = options.matchAll ? match.next() : null;
       }
 
-      if (lastSaga) {
+      // This cancels any running sagas unless the only change in
+      // the location is the query params.
+      if (lastSaga && !onlyQueryParamChange) {
         effects.push(cancel(lastSaga));
       }
 
