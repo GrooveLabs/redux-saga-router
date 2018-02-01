@@ -1,5 +1,5 @@
 /* eslint no-console: ["error", { allow: ["error"] }] */
-import { call, all, take, spawn, cancel, join } from 'redux-saga/effects';
+import { call, take, spawn, cancel, join } from 'redux-saga/effects';
 import fsmIterator from 'fsm-iterator';
 import buildRouteMatcher from './buildRouteMatcher';
 import createHistoryChannel from './createHistoryChannel';
@@ -14,7 +14,6 @@ export default function router(history, routes, options = {}) {
   const routeMatcher = buildRouteMatcher(routes);
   let historyChannel = null;
   let lastMatch = null;
-  let lastSaga = null;
   let pendingBeforeRouteChange = null;
   let currentLocation = null;
 
@@ -31,14 +30,6 @@ export default function router(history, routes, options = {}) {
     };
   }
 
-  function deepEqual(x, y) {
-    const ok = Object.keys, tx = typeof x, ty = typeof y;
-    return x && y && tx === 'object' && tx === ty ? (
-      ok(x).length === ok(y).length &&
-      ok(x).every(key => deepEqual(x[key], y[key]))
-    ) : (x === y);
-  }
-
   return fsmIterator(INIT, {
     [INIT]: () => ({
       value: call(createHistoryChannel, history),
@@ -48,10 +39,6 @@ export default function router(history, routes, options = {}) {
     [LISTEN](effects) {
       if (effects && !historyChannel) {
         historyChannel = effects;
-      }
-
-      if (effects instanceof Array) {
-        [lastSaga] = effects;
       }
 
       if ('beforeRouteChange' in options) {
@@ -99,34 +86,15 @@ export default function router(history, routes, options = {}) {
       let match = routeMatcher.match(path);
       const effects = [];
 
-      let onlyQueryParamChange = false;
-
-      // Ensuring both match and lastMatch are not null before navigating keys in the 'else if'
-      if (lastMatch === null || match === null) {
-        onlyQueryParamChange = false;
-      } else if (match.index === lastMatch.index && deepEqual(lastMatch.params, match.params)) {
-        // If the indexs match, the root path has not changed
-        // and if the url params are the same then those have not changed either.
-        // The only other option that would trigger HANDLE_LOCATION
-        // is if only the query params were changed.
-        onlyQueryParamChange = true;
-      }
-
       while (match !== null) {
         lastMatch = match;
         effects.push(spawn(match.action, match.params));
         match = options.matchAll ? match.next() : null;
       }
 
-      // This cancels any running sagas unless the only change in
-      // the location is the query params.
-      if (lastSaga && !onlyQueryParamChange) {
-        effects.push(cancel(lastSaga));
-      }
-
       if (effects.length > 0) {
         return {
-          value: all(effects),
+          value: effects,
           next: LISTEN,
         };
       }
