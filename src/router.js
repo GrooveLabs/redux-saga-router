@@ -121,7 +121,10 @@ export default function router(history, routes, options = {}) {
       // This cancels any running sagas unless the only change in
       // the location is the query params.
       if (lastSaga && !onlyQueryParamChange) {
+        console.log('======')
+        console.log('=== lastSaga', lastSaga)
         effects.push(cancel(lastSaga));
+        console.log('=== effects', effects);
       }
 
       if (effects.length > 0) {
