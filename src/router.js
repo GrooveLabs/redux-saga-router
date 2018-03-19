@@ -112,19 +112,20 @@ export default function router(history, routes, options = {}) {
         onlyQueryParamChange = true;
       }
 
-      while (match !== null) {
-        lastMatch = match;
-        effects.push(spawn(match.action, match.params));
-        match = options.matchAll ? match.next() : null;
-      }
 
       // This cancels any running sagas unless the only change in
       // the location is the query params.
       if (lastSaga && !onlyQueryParamChange) {
         console.log('======')
         console.log('=== lastSaga', lastSaga)
-        effects.push(cancel(lastSaga));
+        cancel(lastSaga);
         console.log('=== effects', effects);
+      }
+
+      while (match !== null) {
+        lastMatch = match;
+        effects.push(spawn(match.action, match.params));
+        match = options.matchAll ? match.next() : null;
       }
 
       if (effects.length > 0) {
