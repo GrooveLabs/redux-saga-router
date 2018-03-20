@@ -118,7 +118,9 @@ export default function router(history, routes, options = {}) {
       if (lastSaga && !onlyQueryParamChange) {
         console.log('======')
         console.log('=== lastSaga', lastSaga)
+        console.log('=== lastSaga isCancelled() before the cancel', lastSaga.isCancelled())
         cancel(lastSaga);
+        console.log('=== lastSaga isCancelled() after the cancel', lastSaga.isCancelled())
         console.log('=== effects', effects);
       }
 
