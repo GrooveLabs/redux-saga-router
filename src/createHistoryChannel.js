@@ -1,7 +1,5 @@
 import { eventChannel, buffers } from 'redux-saga';
 
-const BUFFER_LIMIT = 50;
-
 export default function createHistoryChannel(history) {
   function subscribe(emitter) {
     let initialLocation;
@@ -21,5 +19,5 @@ export default function createHistoryChannel(history) {
     });
   }
 
-  return eventChannel(subscribe, buffers.fixed(BUFFER_LIMIT));
+  return eventChannel(subscribe, buffers.expanding());
 }
