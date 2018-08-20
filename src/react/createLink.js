@@ -1,6 +1,7 @@
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable global-require,import/no-extraneous-dependencies */
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+
+const PropTypes = React.PropTypes || require('prop-types');
 
 export default function createLink(history) {
   class Link extends Component {
