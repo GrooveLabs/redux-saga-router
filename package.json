@@ -10,10 +10,10 @@
   ],
   "scripts": {
     "build": "babel src --out-dir lib",
-    "check": "npm run lint && npm test",
+    "check": "yarn lint && yarn test",
     "clean": "rimraf lib",
     "lint": "eslint src __tests__",
-    "prepublish": "npm run clean && npm run build",
+    "prepublish": "yarn clean && yarn build",
     "semantic-release": "semantic-release",
     "test": "jest",
     "watch:test": "jest --watch",
