@@ -1,5 +1,5 @@
 {
-  "name": "redux-saga-router",
+  "name": "@groove-labs/redux-saga-router",
   "version": "2.2.0",
   "description": "A router for Redux Saga",
   "main": "lib/index.js",
@@ -10,16 +10,18 @@
   ],
   "scripts": {
     "build": "babel src --out-dir lib",
-    "check": "npm run lint && npm test",
+    "check": "yarn lint && yarn test",
     "clean": "rimraf lib",
     "lint": "eslint src __tests__",
-    "prepublish": "npm run clean && npm run build",
+    "prepublish": "yarn clean && yarn build",
+    "semantic-release": "semantic-release",
     "test": "jest",
-    "watch:test": "jest --watch"
+    "watch:test": "jest --watch",
+    "travis-deploy-once": "./node_modules/.bin/travis-deploy-once --pro"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jfairbank/redux-saga-router.git"
+    "url": "git+https://github.com/GrooveLabs/redux-saga-router.git"
   },
   "keywords": [
     "redux",
@@ -32,9 +34,9 @@
   "author": "Jeremy Fairbank <elpapapollo@gmail.com> (http://jeremyfairbank.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jfairbank/redux-saga-router/issues"
+    "url": "https://github.com/GrooveLabs/redux-saga-router/issues"
   },
-  "homepage": "https://github.com/jfairbank/redux-saga-router#readme",
+  "homepage": "https://github.com/GrooveLabs/redux-saga-router#readme",
   "dependencies": {
     "fsm-iterator": "^1.0.0",
     "history": "^4.7.2",
@@ -71,6 +73,8 @@
     "redux-saga": "^0.16.0",
     "redux-saga-test-plan": "^3.4.0",
     "rimraf": "^2.5.4",
+    "semantic-release": "^15.13.3",
+    "travis-deploy-once": "^5.0.11",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.16.1"
   },

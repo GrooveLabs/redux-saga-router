@@ -2,7 +2,7 @@
 import fsmIterator from 'fsm-iterator';
 import buildRouteMatcher from './buildRouteMatcher';
 import createHistoryChannel from './createHistoryChannel';
-import { all, call, take, spawn, cancel, join } from './effects';
+import { all, call, take, spawn, join } from './effects';
 
 const INIT = 'INIT';
 const LISTEN = 'LISTEN';
