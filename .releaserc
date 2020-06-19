@@ -2,6 +2,12 @@
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/github",
+    [
+      "@semantic-release/npm",
+      {
+        "allowSameVersion": true
+      }
+    ],
     "@semantic-release/release-notes-generator"
   ]
 }
